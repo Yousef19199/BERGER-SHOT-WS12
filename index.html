@@ -1,87 +1,78 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>مطعم برقر شوت 🍔</title>
-  <link rel="stylesheet" href="style.css" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مطعم برقر شوت 🍔</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body data-page="index">
-  <header>
-    <h1>🍔 أهلاً بكـم في مطعم برقر شوت</h1>
-    <p>أفضل نكهات البرقر في مدينة وورلد ستار</p>
-  </header>
+<header>
+  <h1>🍔 أهلاً بكـم في مطعم برقر شوت</h1>
+  <p>أفضل نكهات البرقر في مدينة وورلد ستار</p>
+</header>
 
-  <main class="container">
-    <section class="menu card">
-      <h2>🔥 اختار وجبتك</h2>
-      <div class="choices">
-        <label><input type="radio" name="meal" value="صغير" checked /> وجبة صغير</label>
-        <label><input type="radio" name="meal" value="وسط" /> وجبة وسط</label>
-        <label><input type="radio" name="meal" value="كبير" /> وجبة كبير</label>
-      </div>
+<main class="container">
+  <section class="menu card">
+    <h2>🔥 اختار وجبتك</h2>
+    <div class="choices">
+      <label><input type="radio" name="meal" value="صغير" checked> وجبة صغير</label>
+      <label><input type="radio" name="meal" value="وسط"> وجبة وسط</label>
+      <label><input type="radio" name="meal" value="كبير"> وجبة كبير</label>
+    </div>
 
-      <h3>معلومات الطلب</h3>
-      <div class="form">
-        <input id="playerName" placeholder="اسمك داخل اللعبة" />
-        <input id="playerId" placeholder="رقمك داخل اللعبة" />
-        <button id="placeOrderBtn">🚀 اطلب الآن</button>
-        <p id="orderResult" class="notice"></p>
-      </div>
-    </section>
+    <h3>معلومات الطلب</h3>
+    <div class="form">
+      <input id="playerName" placeholder="اسمك داخل اللعبة">
+      <input id="playerId" placeholder="رقمك داخل اللعبة">
+      <button id="placeOrderBtn">🚀 اطلب الآن</button>
+      <p id="orderResult" class="notice"></p>
+    </div>
+  </section>
 
-    <section class="info card">
-      <h2>📦 العروض</h2>
-      <ul>
-        <li>وجبة صغيره – 15 وجبة — السعر: 2000 دولار</li>
-        <li>وجبة وسط – 25 وجبة — السعر: 4500 دولار</li>
-        <li>وجبة اكبيره – 30 وجبة — السعر: 5500 دولار</li>
-      </ul>
-      <p>عند الطلب توجّه للكاشير لاستلام وجبتك ورقم التواصل للمطعم: <strong>7676767</strong></p>
-    </section>
-  </main>
+  <section class="info card">
+    <h2>📦 العروض</h2>
+    <ul>
+      <li>وجبة صغير – 15 وجبة — السعر: 2000 دولار</li>
+      <li>وجبة الوسط – 25 وجبة — السعر: 4500 دولار</li>
+      <li>وجبة كبير – 30 وجبة — السعر: 5500 دولار</li>
+    </ul>
+    <p>عند الطلب توجّه للكاشير لاستلام وجبتك ورقم التواصل للمطعم: <strong>7676767</strong></p>
+  </section>
+</main>
 
-  <footer>
-    <a href="login.html">دخول الموظفين / المسؤول</a>
-  </footer>
+<footer>
+  <a href="login.html">دخول الموظفين / المسؤول</a>
+</footer>
 
-  <script src="app.js"></script>
-  <script>
-    // سلوك صفحة index
-    (function() {
-      if (document.body.dataset.page !== 'index') return;
-      const placeBtn = document.getElementById('placeOrderBtn');
-      const result = document.getElementById('orderResult');
+<script src="app.js"></script>
+<script>
+(function(){
+  if(document.body.dataset.page!=='index') return;
+  const placeBtn = document.getElementById('placeOrderBtn');
+  const result = document.getElementById('orderResult');
 
-      placeBtn.addEventListener('click', () => {
-        const meal = document.querySelector('input[name=meal]:checked').value;
-        const name = document.getElementById('playerName').value.trim();
-        const pid = document.getElementById('playerId').value.trim();
+  placeBtn.addEventListener('click', ()=>{
+    const meal = document.querySelector('input[name=meal]:checked').value;
+    const name = document.getElementById('playerName').value.trim();
+    const pid = document.getElementById('playerId').value.trim();
 
-        if (!name || !pid) {
-          result.innerText = 'اكتب اسمك ورقمك داخل اللعبة عشان نكمل الطلب.';
-          result.classList.add('error');
-          return;
-        }
+    if(!name || !pid){
+      result.innerText='اكتب اسمك ورقمك داخل اللعبة عشان نكمل الطلب.';
+      result.classList.add('error');
+      return;
+    }
 
-        const orderNumber = generateOrderNumber();
-        const order = {
-          id: orderNumber,
-          meal,
-          playerName: name,
-          playerId: pid,
-          status: 'قيد الانتظار',
-          time: new Date().toISOString()
-        };
+    const orderNumber = generateOrderNumber();
+    const order = { id: orderNumber, meal, playerName:name, playerId:pid, status:'قيد الانتظار', time:new Date().toISOString() };
+    pushOrder(order);
 
-        pushOrder(order);
-        result.classList.remove('error');
-        result.innerText = '🔔 رقم طلبك: ' + orderNumber + ' — توجّه للكاشير لاستلام الطلب.';
-        // تفريغ الحقول
-        document.getElementById('playerName').value = '';
-        document.getElementById('playerId').value = '';
-      });
-    })();
-  </script>
+    result.classList.remove('error');
+    result.innerText='🔔 رقم طلبك: '+orderNumber+' — توجّه للكاشير لاستلام الطلب.';
+    document.getElementById('playerName').value='';
+    document.getElementById('playerId').value='';
+  });
+})();
+</script>
 </body>
 </html>
