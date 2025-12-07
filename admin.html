@@ -7,70 +7,75 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body data-page="admin">
-<header><h1>لوحة المسؤول</h1></header>
+
+<header>
+  <h1>لوحة المسؤول</h1>
+</header>
 
 <main class="container">
-<section class="card">
-  <h2>معلومات المطعم</h2>
-  <p>رقم التواصل: <strong>7676767</strong></p>
-</section>
+  <section class="card">
+    <h2>رقم التواصل للمطعم</h2>
+    <p>05XXXXXXX</p>
+  </section>
 
-<section class="card">
-  <h2>إضافة موظف جديد</h2>
-  <input id="empName" placeholder="اسم الموظف">
-  <input id="empPass" placeholder="كلمة المرور">
-  <button id="addEmpBtn">أضف موظف</button>
-</section>
+  <section class="card">
+    <h2>إضافة موظف جديد</h2>
+    <input id="empName" placeholder="اسم الموظف">
+    <input id="empPass" placeholder="كلمة المرور">
+    <button id="addEmpBtn">أضف موظف</button>
+    <p class="note">الموظفين يظهرون بعدها في صفحة تسجيل الدخول.</p>
+  </section>
 
-<section class="card">
-  <h2>قائمة الموظفين</h2>
-  <ul id="empList"></ul>
-</section>
+  <section class="card">
+    <h2>قائمة الموظفين</h2>
+    <ul id="empList"></ul>
+  </section>
 
-<section class="card">
-  <h2>الطلبات الحالية</h2>
-  <a href="dashboard.html">اذهب لعرض الطلبات</a>
-</section>
+  <section class="card">
+    <h2>الطلبات الحالية</h2>
+    <a href="dashboard.html">اذهب لعرض الطلبات</a>
+  </section>
 </main>
 
 <footer>
-<a href="login.html">تسجيل الخروج</a>
+  <a href="login.html">تسجيل الخروج</a>
 </footer>
 
 <script src="app.js"></script>
 <script>
 (function(){
-if(document.body.dataset.page!=='admin') return;
-const isAdminSession = sessionStorage.getItem('isAdmin')==='1';
-if(!isAdminSession){ alert('يجب تسجيل الدخول كمسؤول'); location.href='login.html'; return; }
+  if(document.body.dataset.page!=='admin') return;
+  if(sessionStorage.getItem('isAdmin')!=='1'){ alert('انت غير مؤهل للدخول'); location.href='login.html'; return; }
 
-const empList = document.getElementById('empList');
-function refreshEmployees(){
-  const users = getAllEmployees();
-  empList.innerHTML = '';
-  users.forEach(u=>{
-    const li = document.createElement('li');
-    li.innerHTML = `<strong>${u.username}</strong> — <button data-emp="${u.username}" class="delBtn">احذف</button>`;
-    empList.appendChild(li);
-  });
-  document.querySelectorAll('.delBtn').forEach(b=>{
-    b.addEventListener('click', ()=>{
-      const name = b.dataset.emp;
-      if(confirm('احذف الموظف '+name+'؟')){ removeEmployee(name); refreshEmployees();}
+  const empList = document.getElementById('empList');
+
+  function refreshEmployees(){
+    const users = getAllEmployees();
+    empList.innerHTML = '';
+    users.forEach(u=>{
+      const li = document.createElement('li');
+      li.innerHTML = `<strong>${u.username}</strong> — <button data-emp="${u.username}" class="delBtn">احذف</button>`;
+      empList.appendChild(li);
     });
-  });
-}
+    document.querySelectorAll('.delBtn').forEach(b=>{
+      b.addEventListener('click', ()=>{
+        const name = b.dataset.emp;
+        if(confirm('احذف الموظف ' + name + '؟')) { removeEmployee(name); refreshEmployees(); }
+      });
+    });
+  }
 
-document.getElementById('addEmpBtn').addEventListener('click', async ()=>{
-  const name = document.getElementById('empName').value.trim();
-  const pass = document.getElementById('empPass').value;
-  if(!name||!pass){ alert('اكتب اسم وكلمة مرور'); return; }
-  const ok = await addEmployee(name, pass);
-  if(!ok){ alert('المستخدم موجود مسبقاً'); return; }
-  document.getElementById('empName').value=''; document.getElementById('empPass').value='';
+  document.getElementById('addEmpBtn').addEventListener('click', async ()=>{
+    const name = document.getElementById('empName').value.trim();
+    const pass = document.getElementById('empPass').value;
+    if(!name || !pass){ alert('اكتب اسم وكلمة مرور'); return; }
+    const ok = await addEmployee(name, pass);
+    if(!ok){ alert('المستخدم موجود مسبقاً'); return; }
+    document.getElementById('empName').value=''; document.getElementById('empPass').value='';
+    refreshEmployees();
+  });
+
   refreshEmployees();
-});
-refreshEmployees();
 })();
 </script>
 </body>
