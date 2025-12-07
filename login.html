@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>دخول - برقر شوت</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body data-page="login">
+  <header>
+    <h1>تسجيل دخول الموظف / المسؤول</h1>
+  </header>
+
+  <main class="container">
+    <section class="card form-card">
+      <div id="adminSetup" style="display:none;">
+        <h2>إنشاء حساب المسؤول (أول مرة)</h2>
+        <input id="newAdminName" placeholder="اسم المسؤول" />
+        <input id="newAdminPass" placeholder="كلمة المرور" type="password" />
+        <button id="createAdminBtn">إنشاء المسؤول</button>
+        <p class="note">هذه الخطوة فقط لأول تشغيل. سيحفظ النظام المسؤول مشفَّراً داخل المتصفح.</p>
+      </div>
+
+      <div id="loginForm">
+        <h2>دخول</h2>
+        <input id="username" placeholder="اسم المستخدم" />
+        <input id="password" placeholder="كلمة المرور" type="password" />
+        <label><input type="checkbox" id="asAdminCheckbox" /> تسجيل كمسؤول</label>
+        <button id="loginBtn">دخول</button>
+        <p id="loginMsg" class="notice"></p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <a href="index.html">العودة للصفحة الرئيسية</a>
+  </footer>
+
+  <script src="app.js"></script>
+  <script>
+    (function(){
+      if (document.body.dataset.page !== 'login') return;
+
+      const adminExists = !!getAdmin();
+      document.getElementById('adminSetup').style.display = adminExists ? 'none' : 'block';
+
+      document.getElementById('createAdminBtn').addEventListener('click', async ()=>{
+        const name = document.getElementById('newAdminName').value.trim();
+        const pass = document.getElementById('newAdminPass').value;
+        if(!name || !pass){ alert('ادخل اسم وكلمة مرور'); return; }
+        await createAdmin(name, pass);
+        alert('تم إنشاء حساب المسؤول. تقدر تسجل دخول الآن.');
+        location.reload();
+      });
+
+      document.getElementById('loginBtn').addEventListener('click', async ()=>{
+        const user = document.getElementById('username').value.trim();
+        const pass = document.getElementById('password').value;
+        const asAdmin = document.getElementById('asAdminCheckbox').checked;
+
+        if(!user || !pass){ document.getElementById('loginMsg').innerText='اكتب اسم وكلمة المرور'; return; }
+        const ok = await loginUser(user, pass, asAdmin);
+        if(ok) {
+          // ضع عبارة في session ثم اذهب للصفحة المناسبة
+          sessionStorage.setItem('loggedUser', user);
+          sessionStorage.setItem('isAdmin', asAdmin ? '1' : '0');
+          location.href = asAdmin ? 'admin.html' : 'dashboard.html';
+        } else {
+          document.getElementById('loginMsg').innerText='بيانات خاطئة';
+        }
+      });
+
+    })();
+  </script>
+</body>
+</html>
