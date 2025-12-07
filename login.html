@@ -1,4 +1,4 @@
-<!DOCTYPE html><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body data-page="login">
+
 <header>
   <h1>تسجيل دخول الموظف / المسؤول</h1>
 </header>
@@ -15,11 +16,11 @@
   <section class="card form-card">
     <div id="adminSetup" style="display:none;">
       <h2>إنشاء حساب المسؤول (أول مرة)</h2>
-      <input id="secretCode" placeholder="الرمز السري">
+      <input id="secretCode" placeholder="رمز إنشاء المسؤول">
       <input id="newAdminName" placeholder="اسم المسؤول">
       <input id="newAdminPass" placeholder="كلمة المرور" type="password">
       <button id="createAdminBtn">إنشاء المسؤول</button>
-      <p class="note">الرمز السري مطلوب لإنشاء المسؤول.</p>
+      <p class="note">هذه الخطوة فقط لأول تشغيل. الرمز السري مطلوب.</p>
     </div>
 
     <div id="loginForm">
@@ -41,19 +42,21 @@
 <script>
 (async function(){
   if(document.body.dataset.page!=='login') return;
+  const secretCodeReal = 'Matrix-130'; // الرمز السري لإنشاء مسؤول
 
   const adminExists = !!getAdmin();
-  document.getElementById('adminSetup').style.display = adminExists ? 'none':'block';
-  const SECRET = 'Matrix-130';
+  document.getElementById('adminSetup').style.display = adminExists ? 'none' : 'block';
 
   document.getElementById('createAdminBtn').addEventListener('click', async ()=>{
     const code = document.getElementById('secretCode').value.trim();
     const name = document.getElementById('newAdminName').value.trim();
     const pass = document.getElementById('newAdminPass').value;
-    if(!code || !name || !pass){ alert('اكمل جميع الحقول'); return;}
-    if(code!==SECRET){ alert('رمز خاطئ'); return;}
+
+    if(!code || !name || !pass){ alert('ادخل الرمز واسم المسؤول وكلمة المرور'); return; }
+    if(code !== secretCodeReal){ alert('الرمز السري غير صحيح'); return; }
+
     await createAdmin(name, pass);
-    alert('تم إنشاء حساب المسؤول. الآن سجل دخولك.');
+    alert('تم إنشاء حساب المسؤول. تقدر تسجل دخول الآن.');
     location.reload();
   });
 
@@ -62,15 +65,15 @@
     const pass = document.getElementById('password').value;
     const asAdmin = document.getElementById('asAdminCheckbox').checked;
     if(!user || !pass){ document.getElementById('loginMsg').innerText='اكتب اسم وكلمة المرور'; return; }
+
     const ok = await loginUser(user, pass, asAdmin);
     if(ok){
       sessionStorage.setItem('loggedUser', user);
       sessionStorage.setItem('isAdmin', asAdmin?'1':'0');
-      location.href = asAdmin?'admin.html':'dashboard.html';
-    }else{
-      document.getElementById('loginMsg').innerText='بيانات خاطئة';
-    }
+      location.href = asAdmin ? 'admin.html' : 'dashboard.html';
+    } else { document.getElementById('loginMsg').innerText='بيانات خاطئة أو غير مسجل'; }
   });
+
 })();
 </script>
 </body>
