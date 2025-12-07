@@ -7,8 +7,15 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body data-page="index">
+
 <header>
-  <h1>🍔 أهلاً بكـم في مطعم برقر شوت</h1>
+  <nav class="tabs">
+    <a href="index.html" class="active">القائمة</a>
+    <a href="login.html">الموظفين</a>
+    <a href="#">الطلبات</a>
+    <a href="#">العروض</a>
+  </nav>
+  <h1>أهلاً بكـم في مطعم برقر شوت</h1>
   <p>أفضل نكهات البرقر في مدينة وورلد ستار</p>
 </header>
 
@@ -34,10 +41,10 @@
     <h2>📦 العروض</h2>
     <ul>
       <li>وجبة صغير – 15 وجبة — السعر: 2000 دولار</li>
-      <li>وجبة الوسط – 25 وجبة — السعر: 4500 دولار</li>
+      <li>وجبة وسط – 25 وجبة — السعر: 4500 دولار</li>
       <li>وجبة كبير – 30 وجبة — السعر: 5500 دولار</li>
     </ul>
-    <p>عند الطلب توجّه للكاشير لاستلام وجبتك ورقم التواصل للمطعم: <strong>7676767</strong></p>
+    <p>عند الطلب توجّه للكاشير لاستلام وجبتك ورقم التواصل: <strong>05XXXXXXX</strong></p>
   </section>
 </main>
 
@@ -47,28 +54,35 @@
 
 <script src="app.js"></script>
 <script>
-(function(){
+(function() {
   if(document.body.dataset.page!=='index') return;
+
   const placeBtn = document.getElementById('placeOrderBtn');
   const result = document.getElementById('orderResult');
 
-  placeBtn.addEventListener('click', ()=>{
+  placeBtn.addEventListener('click', () => {
     const meal = document.querySelector('input[name=meal]:checked').value;
     const name = document.getElementById('playerName').value.trim();
     const pid = document.getElementById('playerId').value.trim();
 
     if(!name || !pid){
-      result.innerText='اكتب اسمك ورقمك داخل اللعبة عشان نكمل الطلب.';
+      result.innerText = 'اكتب اسمك ورقمك داخل اللعبة عشان نكمل الطلب.';
       result.classList.add('error');
       return;
     }
 
     const orderNumber = generateOrderNumber();
-    const order = { id: orderNumber, meal, playerName:name, playerId:pid, status:'قيد الانتظار', time:new Date().toISOString() };
+    const order = {
+      id: orderNumber,
+      meal,
+      playerName: name,
+      playerId: pid,
+      status: 'قيد الانتظار',
+      time: new Date().toISOString()
+    };
     pushOrder(order);
-
     result.classList.remove('error');
-    result.innerText='🔔 رقم طلبك: '+orderNumber+' — توجّه للكاشير لاستلام الطلب.';
+    result.innerText = '🔔 رقم طلبك: ' + orderNumber + ' — توجّه للكاشير لاستلام الطلب.';
     document.getElementById('playerName').value='';
     document.getElementById('playerId').value='';
   });
